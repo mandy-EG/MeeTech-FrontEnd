@@ -1,0 +1,156 @@
+import { useState, useEffect } from 'react' // Se quitó 'React' del import
+import { Eye, EyeOff } from 'lucide-react';
+import axios from 'axios'
+import { useNavigate, Link } from 'react-router-dom'
+import Cookies from 'js-cookie'
+import { toast } from 'sonner'
+
+const Login = () => {
+  const [mostrarPassword, setMostrarPassword] = useState(false)
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  })
+
+  // Lógica para el carrusel de imágenes
+  const [currentImg, setCurrentImg] = useState(0)
+
+  const imagenes = [
+    "./public/fondoRestaurante.png",
+    "./public/fondoRestaurante2.png",
+    "./public/fondoRestaurante3.png"
+  ]
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setCurrentImg((prev) => (prev + 1) % imagenes.length);
+    }, 15000);
+    return () => clearInterval(intervalo);
+  }, [imagenes.length]);
+
+  const navigate = useNavigate()
+
+  // Función para manejar cambios en los campos del formulario
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value })
+  }
+
+  // Función para manejar el envío del formulario
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post('/login', formData);
+      const { token, email } = res.data; // Desestructuración limpia
+
+      Cookies.set('token', token);
+      toast.success('Inicio de sesión exitoso...')
+      navigate('/home')
+
+    } catch (error) {
+      // Validación para evitar el error "cannot read property data of undefined"
+      const errorMsg = error.response?.data?.message || "Error de conexión con el servidor";
+      console.error(errorMsg);
+      toast.error(errorMsg);
+    }
+  }
+
+  const btnMostrarPassword = () => {
+    setMostrarPassword(!mostrarPassword)
+  }
+
+  return (
+    <div className="h-screen bg-gray-900 flex items-center justify-center">
+      <section className="h-screen w-full relative"> {/* Agregué relative aquí */}
+        {imagenes.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`Fondo ${index}`}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+              index === currentImg ? "opacity-40" : "opacity-0"
+            }`}
+          />
+        ))}
+        <div id="textos-img" className='w-1/3 flex flex-col absolute bottom-40 left-20 p-4 gap-2'>
+          <h1 className="text-4xl text-yellow-600 font-bold">Lleva tu restaurante al siguiente nivel</h1>
+          <span className="text-gray-300">Meetech es un software de gestión para restaurantes, siente la diferencia con nuestra solución integral.</span>
+        </div>
+      </section>
+
+      <section className="bg-gray-200 w-2/3 h-screen flex flex-col justify-center items-center">
+        <h1 className="text-2xl font-bold text-blue-600 mb-6">Bienvenido a MeeTech</h1>
+        <h3 className="text-gray-700 mb-4">Ingresa tus datos para continuar</h3>
+
+        <form
+          onSubmit={handleSubmit}
+          className='flex flex-col w-2/3'>
+
+          <div className='flex flex-col mb-4'>
+            <label htmlFor="email" className='pl-2 font-bold'>Email</label>
+            <input
+              id="email"
+              type="email"
+              name='email'
+              placeholder="Ingrese su email"
+              onChange={handleChange}
+              value={formData.email}
+              className="w-full p-2 rounded-xl border-2 border-blue-200 outline-none transition-all duration-300 focus:border-gray-500 ring-2 ring-gray-100/50"
+              required
+            />
+          </div>
+
+          <div className='flex flex-col mb-4'>
+            <div className='flex justify-between items-center'>
+              <label htmlFor="contrasena" className='pl-2 font-bold'>Contraseña</label>
+              <a href="#" className='text-blue-500 text-sm hover:underline'>¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <div className="relative">
+              <input
+                id="contrasena"
+                type={mostrarPassword ? "text" : "password"}
+                name='password'
+                placeholder="Ingrese su contraseña"
+                onChange={handleChange}
+                value={formData.password}
+                className="w-full p-2 rounded-xl border-2 border-blue-200 outline-none transition-all duration-300 focus:border-gray-500 ring-2 ring-gray-100/50"
+                required
+              />
+              <button
+                type="button"
+                onClick={btnMostrarPassword}
+                className="absolute right-3 top-2.5"
+              >
+                {mostrarPassword ?
+                  <EyeOff size={20} className="text-blue-600 cursor-pointer" /> :
+                  <Eye size={20} className="text-blue-600 cursor-pointer" />
+                }
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-xl transition-colors duration-300 cursor-pointer mt-2"
+          >
+            Iniciar Sesión
+          </button>
+
+          <div className='mt-8 text-center'>
+            <p className='text-gray-700'>
+              ¿No tienes cuenta? <Link to="/register" className='text-blue-500 font-bold hover:underline'>Regístrate aquí</Link>
+            </p>
+          </div>
+
+          <ul className="mt-8 flex justify-center space-x-4">
+            <li className="text-gray-600 text-sm"><a href="#" className="hover:underline">privacy policy</a></li>
+            <li className="text-gray-600 text-sm"><a href="#" className="hover:underline">terms of service</a></li>
+            <li className="text-gray-600 text-sm"><a href="#" className="hover:underline">contact us</a></li>
+          </ul>
+        </form>
+      </section>
+    </div>
+  )
+}
+
+export default Login
