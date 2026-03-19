@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react' // Se quitó 'React' del import
 import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios'
 import { useNavigate, Link } from 'react-router-dom'
-import Cookies from 'js-cookie'
 import { toast } from 'sonner'
+import GoogleAuthButton from '../auth/GoogleAuthButton.jsx'
 
 const Login = () => {
   const [mostrarPassword, setMostrarPassword] = useState(false)
@@ -30,6 +30,14 @@ const Login = () => {
 
   const navigate = useNavigate()
 
+  useEffect(() => {
+    const storedToken = localStorage.getItem('authToken');
+    if (storedToken) {
+      axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
+      navigate('/home');
+    }
+  }, [navigate]);
+
   // Función para manejar cambios en los campos del formulario
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
@@ -39,10 +47,20 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/login', formData);
-      const { token, email } = res.data; // Desestructuración limpia
+      const res = await axios.post('/login', formData, { withCredentials: true });
+      const { token } = res.data;
 
-      Cookies.set('token', token);
+      if (token) {
+        localStorage.setItem('authToken', token);
+        axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+      }
+
+      const authResponse = await axios.get('/auth/me', {
+        withCredentials: true,
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
+      });
+      localStorage.setItem('authUser', JSON.stringify(authResponse.data.user));
+
       toast.success('Inicio de sesión exitoso...')
       navigate('/home')
 
@@ -135,6 +153,10 @@ const Login = () => {
           >
             Iniciar Sesión
           </button>
+
+          <div className='mt-4'>
+            <GoogleAuthButton label='Continuar con Google' />
+          </div>
 
           <div className='mt-8 text-center'>
             <p className='text-gray-700'>

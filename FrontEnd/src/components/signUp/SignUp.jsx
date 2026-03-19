@@ -3,6 +3,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import axios from 'axios'
 import { useNavigate, Link } from 'react-router-dom'
 import { toast } from 'sonner'
+import GoogleAuthButton from '../auth/GoogleAuthButton.jsx'
 
 const Register = () => {
     const [mostrarPassword, setMostrarPassword] = useState(false)
@@ -148,6 +149,10 @@ const Register = () => {
                     <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors duration-300 cursor-pointer font-bold">
                         Registrarme
                     </button>
+
+                    <div className='mt-4'>
+                        <GoogleAuthButton label='Registrarme con Google' />
+                    </div>
 
                     <div id="ruta-login" className='mt-6 text-center'>
                         <p className='text-gray-700'>
