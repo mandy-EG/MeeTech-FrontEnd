@@ -56,116 +56,136 @@ const Register = () => {
     }
 
     return (
-        <div className="h-screen bg-gray-900 flex items-center justify-center">
-            {/* Sección Izquierda - Imagen y Texto */}
-            <section className="h-screen w-full relative">
+        <div className="min-h-screen bg-gray-900 flex flex-col md:flex-row items-stretch">
+
+            {/* Sección Izquierda - Imagen y Texto — oculta en móvil */}
+            <section className="hidden md:block md:w-1/2 lg:w-3/5 h-screen relative flex-shrink-0">
                 {imagenes.map((img, index) => (
                     <img
                         key={index}
                         src={img}
                         alt={`Fondo ${index}`}
-                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === currentImg ? "opacity-40" : "opacity-0"
-                            }`}
+                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                            index === currentImg ? "opacity-40" : "opacity-0"
+                        }`}
                     />
                 ))}
-                <div id="textos-img" className='w-1/3 flex flex-col absolute bottom-50 left-20 p-4 gap-2'>
-                    <h1 className="text-4xl text-yellow-600 font-bold">Únete a la revolución culinaria</h1>
-                    <span className="text-gray-300">Forma parte de MeeTech y optimiza cada proceso de tu negocio con tecnología de punta.</span>
+                <div id="textos-img" className="absolute bottom-16 left-8 lg:left-16 p-4 flex flex-col gap-3 max-w-xs lg:max-w-sm">
+                    <h1 className="text-2xl lg:text-4xl text-yellow-500 font-bold leading-tight">
+                        Únete a la revolución culinaria
+                    </h1>
+                    <span className="text-gray-300 text-sm lg:text-base">
+                        Forma parte de MeeTech y optimiza cada proceso de tu negocio con tecnología de punta.
+                    </span>
                 </div>
             </section>
 
-            {/* Sección Derecha - Formulario */}
-            <section className="bg-gray-200 w-2/3 h-screen flex flex-col justify-center items-center overflow-y-auto">
-                <h1 className="text-2xl font-bold text-blue-600 mb-6">Crea tu cuenta en MeeTech</h1>
+            {/* Sección Derecha - Formulario — ancho completo en móvil, mitad en md+ */}
+            <section className="w-full md:w-1/2 lg:w-2/5 min-h-screen bg-gray-200 flex flex-col justify-center items-center px-6 py-10 md:py-6 overflow-y-auto">
+                <div className="w-full max-w-sm">
+                    <h1 className="text-2xl font-bold text-blue-600 mb-2 text-center">Crea tu cuenta en MeeTech</h1>
+                    <h3 className="text-gray-700 mb-5 text-center text-sm">Completa los datos para registrarte</h3>
 
-                <h3 className="text-gray-700 mb-4">Completa los datos para registrarte</h3>
+                    <form
+                        id="container-inputs"
+                        onSubmit={handleSubmit}
+                        className="flex flex-col w-full">
 
-                <form
-                    id="container-inputs"
-                    onSubmit={handleSubmit}
-                    className='flex flex-col w-2/3'>
-
-                    {/* Nombre */}
-                    <div className='flex flex-col mb-4'>
-                        <label htmlFor="nombre" className='pl-2 font-bold'>Nombre completo</label>
-                        <input
-                            id="nombre"
-                            type="text"
-                            name='nombre'
-                            placeholder="Tu nombre completo"
-                            onChange={handleChange}
-                            value={formData.nombre}
-                            required
-                            className="w-full p-2 rounded-xl border-2 border-blue-200 outline-none transition-all duration-300 focus:border-gray-500 ring-2 ring-gray-100/50" />
-                    </div>
-
-                    {/* Email */}
-                    <div className='flex flex-col mb-4'>
-                        <label htmlFor="email" className='pl-2 font-bold'>Email</label>
-                        <input
-                            id="email"
-                            type="email"
-                            name='email'
-                            placeholder="email@ejemplo.com"
-                            onChange={handleChange}
-                            value={formData.email}
-                            required
-                            className="w-full p-2 rounded-xl border-2 border-blue-200 outline-none transition-all duration-300 focus:border-gray-500 ring-2 ring-gray-100/50" />
-                    </div>
-
-                    {/* Teléfono */}
-                    <div className='flex flex-col mb-4'>
-                        <label htmlFor="telefono" className='pl-2 font-bold'>Teléfono</label>
-                        <input
-                            id="telefono"
-                            type="tel" // Tipo tel para mejor compatibilidad móvil
-                            name='telefono'
-                            placeholder="Ej: +57 300..."
-                            onChange={handleChange}
-                            value={formData.telefono}
-                            required
-                            className="w-full p-2 rounded-xl border-2 border-blue-200 outline-none transition-all duration-300 focus:border-gray-500 ring-2 ring-gray-100/50" />
-                    </div>
-
-                    {/* Contraseña */}
-                    <div className='flex flex-col mb-6'>
-                        <label htmlFor="contrasena" className='pl-2 font-bold'>Contraseña</label>
-                        <div className="relative">
+                        {/* Nombre */}
+                        <div className="flex flex-col mb-3">
+                            <label htmlFor="nombre" className="pl-2 font-bold text-sm">Nombre completo</label>
                             <input
-                                id="contrasena"
-                                type={mostrarPassword ? "text" : "password"}
-                                name='password'
-                                placeholder="Crea una contraseña segura"
+                                id="nombre"
+                                type="text"
+                                name="nombre"
+                                placeholder="Tu nombre completo"
                                 onChange={handleChange}
-                                value={formData.password}
+                                value={formData.nombre}
                                 required
-                                className="w-full p-2 rounded-xl border-2 border-blue-200 outline-none transition-all duration-300 focus:border-gray-500 ring-2 ring-gray-100/50" />
-                            <button type="button" onClick={btnMostrarPassword} className="absolute right-3 top-2.5">
-                                {mostrarPassword ? <EyeOff size={20} className="text-blue-600 font-bold cursor-pointer" /> : <Eye size={20} className="text-blue-600 font-bold cursor-pointer" />}
-                            </button>
+                                className="w-full p-2.5 rounded-xl border-2 border-blue-200 outline-none transition-all duration-300 focus:border-gray-500 ring-2 ring-gray-100/50 text-sm"
+                            />
                         </div>
-                    </div>
 
-                    <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-xl transition-colors duration-300 cursor-pointer font-bold">
-                        Registrarme
-                    </button>
+                        {/* Email */}
+                        <div className="flex flex-col mb-3">
+                            <label htmlFor="email" className="pl-2 font-bold text-sm">Email</label>
+                            <input
+                                id="email"
+                                type="email"
+                                name="email"
+                                placeholder="email@ejemplo.com"
+                                onChange={handleChange}
+                                value={formData.email}
+                                required
+                                className="w-full p-2.5 rounded-xl border-2 border-blue-200 outline-none transition-all duration-300 focus:border-gray-500 ring-2 ring-gray-100/50 text-sm"
+                            />
+                        </div>
 
-                    <div className='mt-4'>
-                        <GoogleAuthButton label='Registrarme con Google' />
-                    </div>
+                        {/* Teléfono */}
+                        <div className="flex flex-col mb-3">
+                            <label htmlFor="telefono" className="pl-2 font-bold text-sm">Teléfono</label>
+                            <input
+                                id="telefono"
+                                type="tel"
+                                name="telefono"
+                                placeholder="Ej: +57 300..."
+                                onChange={handleChange}
+                                value={formData.telefono}
+                                required
+                                className="w-full p-2.5 rounded-xl border-2 border-blue-200 outline-none transition-all duration-300 focus:border-gray-500 ring-2 ring-gray-100/50 text-sm"
+                            />
+                        </div>
 
-                    <div id="ruta-login" className='mt-6 text-center'>
-                        <p className='text-gray-700'>
-                            ¿Ya tienes una cuenta? <Link to="/login" className='text-blue-500 font-bold hover:underline'>Inicia sesión aquí</Link>
-                        </p>
-                    </div>
+                        {/* Contraseña */}
+                        <div className="flex flex-col mb-5">
+                            <label htmlFor="contrasena" className="pl-2 font-bold text-sm">Contraseña</label>
+                            <div className="relative">
+                                <input
+                                    id="contrasena"
+                                    type={mostrarPassword ? "text" : "password"}
+                                    name="password"
+                                    placeholder="Crea una contraseña segura"
+                                    onChange={handleChange}
+                                    value={formData.password}
+                                    required
+                                    className="w-full p-2.5 rounded-xl border-2 border-blue-200 outline-none transition-all duration-300 focus:border-gray-500 ring-2 ring-gray-100/50 text-sm"
+                                />
+                                <button type="button" onClick={btnMostrarPassword} className="absolute right-3 top-2.5">
+                                    {mostrarPassword
+                                        ? <EyeOff size={20} className="text-blue-600 cursor-pointer" />
+                                        : <Eye size={20} className="text-blue-600 cursor-pointer" />
+                                    }
+                                </button>
+                            </div>
+                        </div>
 
-                    <ul className="mt-8 flex justify-center space-x-4">
-                        <li className="text-gray-600 text-sm"><a href="#" className="hover:underline">privacy policy</a></li>
-                        <li className="text-gray-600 text-sm"><a href="#" className="hover:underline">terms of service</a></li>
-                        <li className="text-gray-600 text-sm"><a href="#" className="hover:underline">contact us</a></li>
-                    </ul>
-                </form>
+                        <button
+                            type="submit"
+                            className="bg-blue-600 hover:bg-blue-700 text-white py-2.5 px-4 rounded-xl transition-colors duration-300 cursor-pointer font-bold text-sm"
+                        >
+                            Registrarme
+                        </button>
+
+                        <div className="mt-4">
+                            <GoogleAuthButton label="Registrarme con Google" />
+                        </div>
+
+                        <div id="ruta-login" className="mt-5 text-center">
+                            <p className="text-gray-700 text-sm">
+                                ¿Ya tienes una cuenta?{' '}
+                                <Link to="/login" className="text-blue-500 font-bold hover:underline">
+                                    Inicia sesión aquí
+                                </Link>
+                            </p>
+                        </div>
+
+                        <ul className="mt-5 flex flex-wrap justify-center gap-x-4 gap-y-1">
+                            <li className="text-gray-600 text-xs"><a href="#" className="hover:underline">privacy policy</a></li>
+                            <li className="text-gray-600 text-xs"><a href="#" className="hover:underline">terms of service</a></li>
+                            <li className="text-gray-600 text-xs"><a href="#" className="hover:underline">contact us</a></li>
+                        </ul>
+                    </form>
+                </div>
             </section>
         </div>
     )

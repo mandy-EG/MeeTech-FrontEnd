@@ -72,9 +72,9 @@ const Home = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 p-6 flex items-center justify-center">
-      <section className="max-w-xl w-full bg-gray-800 border border-gray-700 rounded-2xl p-8">
-        <h1 className="text-2xl font-bold text-blue-400">Estado de autenticacion</h1>
+    <div className="min-h-screen bg-gray-900 text-gray-100 px-4 py-8 sm:p-6 flex items-center justify-center">
+      <section className="max-w-xl w-full bg-gray-800 border border-gray-700 rounded-2xl p-6 sm:p-8">
+        <h1 className="text-xl sm:text-2xl font-bold text-blue-400">Estado de autenticación</h1>
 
         {user ? (
           <div className="mt-5 space-y-2">
@@ -83,27 +83,27 @@ const Home = () => {
             <p><strong>Email:</strong> {user.email}</p>
             <p><strong>Google ID:</strong> {user.googleId || 'Cuenta local'}</p>
 
-            <div className="mt-6 flex gap-3">
+            <div className="mt-6 flex flex-col sm:flex-row gap-3">
               <button
                 type="button"
                 onClick={handleProtectedExample}
-                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors duration-300"
+                className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors duration-300 text-sm"
               >
                 Probar Ruta Protegida
               </button>
               <button
                 type="button"
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors duration-300"
+                className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors duration-300 text-sm"
               >
-                Cerrar Sesion
+                Cerrar Sesión
               </button>
             </div>
           </div>
         ) : (
           <div className="mt-5">
             <p><strong>Estado:</strong> No autenticado</p>
-            <p className="mt-2">Inicia sesion para continuar.</p>
+            <p className="mt-2">Inicia sesión para continuar.</p>
             <Link to="/login" className="text-blue-400 hover:underline mt-4 inline-block">Ir al login</Link>
           </div>
         )}
