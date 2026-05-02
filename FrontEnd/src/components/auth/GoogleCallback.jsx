@@ -32,7 +32,7 @@ const GoogleCallback = () => {
 
         localStorage.setItem('authUser', JSON.stringify(response.data.user));
         toast.success('Autenticacion con Google completada');
-        navigate('/home', { replace: true });
+        navigate('/admin', { replace: true });
       } catch (requestError) {
         localStorage.removeItem('authToken');
         localStorage.removeItem('authUser');

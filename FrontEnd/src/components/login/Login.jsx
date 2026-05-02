@@ -16,9 +16,9 @@ const Login = () => {
   const [currentImg, setCurrentImg] = useState(0)
 
   const imagenes = [
-    "./public/fondoRestaurante.png",
-    "./public/fondoRestaurante2.png",
-    "./public/fondoRestaurante3.png"
+    "/fondoRestaurante.png",
+    "/fondoRestaurante2.png",
+    "/fondoRestaurante3.png"
   ]
 
   useEffect(() => {
@@ -30,11 +30,26 @@ const Login = () => {
 
   const navigate = useNavigate()
 
+  const getRoleRoute = (rol) => {
+    const routes = {
+      mesero:    '/mesas',
+      cocinero:  '/cocina',
+      cocina:    '/cocina',
+      caja:      '/facturacion',
+      cajero:    '/facturacion',
+    };
+    return routes[rol] || '/admin';
+  };
+
   useEffect(() => {
     const storedToken = localStorage.getItem('authToken');
+    const storedUser  = localStorage.getItem('authUser');
     if (storedToken) {
       axios.defaults.headers.common.Authorization = `Bearer ${storedToken}`;
-      navigate('/home');
+      const route = storedUser
+        ? getRoleRoute(JSON.parse(storedUser).rol)
+        : '/admin';
+      navigate(route, { replace: true });
     }
   }, [navigate]);
 
@@ -59,10 +74,11 @@ const Login = () => {
         withCredentials: true,
         headers: token ? { Authorization: `Bearer ${token}` } : undefined
       });
-      localStorage.setItem('authUser', JSON.stringify(authResponse.data.user));
+      const user = authResponse.data.user;
+      localStorage.setItem('authUser', JSON.stringify(user));
 
       toast.success('Inicio de sesión exitoso...')
-      navigate('/home')
+      navigate(getRoleRoute(user.rol), { replace: true })
 
     } catch (error) {
       // Validación para evitar el error "cannot read property data of undefined"
